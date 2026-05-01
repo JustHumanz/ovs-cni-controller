@@ -1,0 +1,10 @@
+apiVersion: openstack.humanz.moe/v1
+kind: NeutronConfig
+metadata:
+  name: neutronconfig-sample
+spec:
+  networkUUID: "5b96823c-06f3-442b-9e45-3a1051c1a8ff"
+  ips: 
+    - "100.0.0.20"
+    - "100.0.0.25..100.0.0.27"
+  openStackAuthConfigName: "clouds-config"

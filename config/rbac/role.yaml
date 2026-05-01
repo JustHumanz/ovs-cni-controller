@@ -1,0 +1,34 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - openstack.humanz.moe
+  resources:
+  - neutronconfigs
+  - neutronipaddresses
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - openstack.humanz.moe
+  resources:
+  - neutronconfigs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - openstack.humanz.moe
+  resources:
+  - neutronconfigs/status
+  - neutronipaddresses/status
+  verbs:
+  - get
+  - patch
+  - update

@@ -1,0 +1,5 @@
+## Append samples of your project ##
+resources:
+- openstack_v1_neutronconfig.yaml
+- openstack_v1_neutronipaddress.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples

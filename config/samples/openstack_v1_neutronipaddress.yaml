@@ -1,0 +1,9 @@
+apiVersion: openstack.humanz.moe/v1
+kind: NeutronIPAddress
+metadata:
+  labels:
+    app.kubernetes.io/name: ovs-cni-controller
+    app.kubernetes.io/managed-by: kustomize
+  name: neutronipaddress-sample
+spec:
+  # TODO(user): Add fields here
