@@ -35,8 +35,8 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	openstackv1 "humanz.moe/kube-ovs/api/v1"
-	"humanz.moe/kube-ovs/internal/controller"
+	openstackv1 "github.com/JustHumanz/ovs-cni-controller/api/v1"
+	"github.com/JustHumanz/ovs-cni-controller/internal/controller"
 	// +kubebuilder:scaffold:imports
 )
 

@@ -19,8 +19,8 @@ package controller
 import (
 	"context"
 
+	openstackv1 "github.com/JustHumanz/ovs-cni-controller/api/v1"
 	"go.yaml.in/yaml/v2"
-	openstackv1 "humanz.moe/kube-ovs/api/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

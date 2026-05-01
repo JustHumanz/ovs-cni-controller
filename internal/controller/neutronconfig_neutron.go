@@ -6,12 +6,12 @@ import (
 	"net"
 	"strings"
 
+	openstackv1 "github.com/JustHumanz/ovs-cni-controller/api/v1"
 	"github.com/go-logr/logr"
 	"github.com/gophercloud/gophercloud/v2"
 	"github.com/gophercloud/gophercloud/v2/openstack"
 	"github.com/gophercloud/gophercloud/v2/openstack/networking/v2/networks"
 	"github.com/gophercloud/gophercloud/v2/openstack/networking/v2/ports"
-	openstackv1 "humanz.moe/kube-ovs/api/v1"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 

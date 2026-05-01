@@ -33,7 +33,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	openstackv1 "humanz.moe/kube-ovs/api/v1"
+	openstackv1 "github.com/JustHumanz/ovs-cni-controller/api/v1"
 	// +kubebuilder:scaffold:imports
 )
 

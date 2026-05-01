@@ -27,7 +27,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	openstackv1 "humanz.moe/kube-ovs/api/v1"
+	openstackv1 "github.com/JustHumanz/ovs-cni-controller/api/v1"
 )
 
 var _ = Describe("NeutronConfig Controller", func() {

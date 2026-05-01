@@ -1,4 +1,4 @@
-module humanz.moe/kube-ovs
+module github.com/JustHumanz/ovs-cni-controller
 
 go 1.25.3
 
