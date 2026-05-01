@@ -28,7 +28,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"humanz.moe/kube-ovs/test/utils"
+	"github.com/JustHumanz/ovs-cni-controller/test/utils"
 )
 
 var (
