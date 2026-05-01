@@ -56,6 +56,8 @@ spec:
                 type: string
               portID:
                 type: string
+              subnet:
+                type: string
             type: object
           status:
             description: status defines the observed state of NeutronIPAddress

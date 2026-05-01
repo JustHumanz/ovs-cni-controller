@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"strings"
@@ -12,6 +13,7 @@ import (
 	"github.com/gophercloud/gophercloud/v2/openstack"
 	"github.com/gophercloud/gophercloud/v2/openstack/networking/v2/networks"
 	"github.com/gophercloud/gophercloud/v2/openstack/networking/v2/ports"
+	"github.com/gophercloud/gophercloud/v2/openstack/networking/v2/subnets"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
@@ -112,8 +114,20 @@ func (r *NeutronConfigReconciler) NeutronCreatePorts(neutronConf *openstackv1.Ne
 				AdminStateUp: nil,
 			}).Extract()
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("failed to create port for IP %s: %v", ip, err)
 			}
+
+			prtSubnet, err := subnets.Get(context.Background(), client, prt.FixedIPs[0].SubnetID).Extract()
+			if err != nil {
+				return nil, fmt.Errorf("failed to fetch subnet for port %s: %v", prt.ID, err)
+			}
+			_, ipnet, err := net.ParseCIDR(prtSubnet.CIDR)
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse subnet CIDR: %v", err)
+			}
+
+			prt.Tags = append(prt.Tags, fmt.Sprintf("subnet=%s", net.IP(ipnet.Mask).String()))
+
 			prt_res = append(prt_res, prt)
 			l.Info("Successfully created port", "portID", prt.ID, "ipAddr", prt.FixedIPs[0].IPAddress)
 		}

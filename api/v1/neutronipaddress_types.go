@@ -33,6 +33,7 @@ type NeutronIPAddressSpec struct {
 	// foo is an example field of NeutronIPAddress. Edit neutronipaddress_types.go to remove/update
 	// +optional
 	IpAddress  string `json:"ipAddress,omitempty"`
+	Subnet     string `json:"subnet,omitempty"`
 	MacAddress string `json:"macAddress,omitempty"`
 	PortID     string `json:"portID,omitempty"`
 }

@@ -18,6 +18,7 @@ package controller
 
 import (
 	"context"
+	"strings"
 
 	openstackv1 "github.com/JustHumanz/ovs-cni-controller/api/v1"
 	"go.yaml.in/yaml/v2"
@@ -158,8 +159,10 @@ func (r *NeutronConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		}
 
 		// create new
+		ipSubNet := strings.Split(v.Tags[0], "=")[1]
 		neutronIpPool.Spec = openstackv1.NeutronIPAddressSpec{
 			IpAddress:  v.FixedIPs[0].IPAddress,
+			Subnet:     ipSubNet,
 			MacAddress: v.MACAddress,
 			PortID:     v.ID,
 		}
