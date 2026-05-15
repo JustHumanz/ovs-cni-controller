@@ -1,121 +1,126 @@
 # ovs-cni-controller
-// TODO(user): Add simple overview of use/purpose
 
-## Description
-// TODO(user): An in-depth paragraph about your project and overview of use
+A Kubernetes controller for managing OpenStack Neutron ports using custom resources.
 
-## Getting Started
+The controller defines two namespaced CRDs:
+- `NeutronConfig` (`openstack.humanz.moe/v1`): creates and manages Neutron ports for a given OpenStack network.
+- `NeutronIPAddress` (`openstack.humanz.moe/v1`): represents allocated Neutron IP addresses and updates port state on bind/unbind transitions.
 
-### Prerequisites
-- go version v1.24.6+
-- docker version 17.03+.
-- kubectl version v1.11.3+.
-- Access to a Kubernetes v1.11.3+ cluster.
+## Key behavior
 
-### To Deploy on the cluster
-**Build and push your image to the location specified by `IMG`:**
+- `NeutronConfig` reads OpenStack auth credentials from a ConfigMap containing `clouds.yaml`.
+- It creates Neutron ports for the requested IP addresses and stores the results as `NeutronIPAddress` resources.
+- `NeutronIPAddress` resources track port metadata and can transition between `state=unbound` and `state=bound`.
+- When a `NeutronConfig` is deleted, its associated `NeutronIPAddress` resources are cleaned up and the OpenStack ports are deleted.
+
+## Prerequisites
+
+- Go v1.24.6+
+- Docker or compatible container tool
+- `kubectl` installed and configured for your cluster
+- Access to a Kubernetes cluster
+
+## Build and Run
+
+Build the controller binary locally:
 
 ```sh
-make docker-build docker-push IMG=<some-registry>/ovs-cni-controller:tag
+make build
 ```
 
-**NOTE:** This image ought to be published in the personal registry you specified.
-And it is required to have access to pull the image from the working environment.
-Make sure you have the proper permission to the registry if the above commands don’t work.
+Run the controller locally against your kubeconfig:
 
-**Install the CRDs into the cluster:**
+```sh
+make run
+```
+
+Build and push the controller image:
+
+```sh
+make docker-build IMG=<some-registry>/ovs-cni-controller:tag
+make docker-push IMG=<some-registry>/ovs-cni-controller:tag
+```
+
+## Deploying to a cluster
+
+Install CRDs into the cluster:
 
 ```sh
 make install
 ```
 
-**Deploy the Manager to the cluster with the image specified by `IMG`:**
+Deploy the controller manager using the image specified by `IMG`:
 
 ```sh
 make deploy IMG=<some-registry>/ovs-cni-controller:tag
 ```
 
-> **NOTE**: If you encounter RBAC errors, you may need to grant yourself cluster-admin
-privileges or be logged in as admin.
-
-**Create instances of your solution**
-You can apply the samples (examples) from the config/sample:
-
-```sh
-kubectl apply -k config/samples/
-```
-
->**NOTE**: Ensure that the samples has default values to test it out.
-
-### To Uninstall
-**Delete the instances (CRs) from the cluster:**
-
-```sh
-kubectl delete -k config/samples/
-```
-
-**Delete the APIs(CRDs) from the cluster:**
-
-```sh
-make uninstall
-```
-
-**UnDeploy the controller from the cluster:**
+To remove the controller deployment:
 
 ```sh
 make undeploy
 ```
 
-## Project Distribution
-
-Following the options to release and provide this solution to the users.
-
-### By providing a bundle with all YAML files
-
-1. Build the installer for the image built and published in the registry:
+To remove CRDs:
 
 ```sh
-make build-installer IMG=<some-registry>/ovs-cni-controller:tag
+make uninstall
 ```
 
-**NOTE:** The makefile target mentioned above generates an 'install.yaml'
-file in the dist directory. This file contains all the resources built
-with Kustomize, which are necessary to install this project without its
-dependencies.
+## Using the controller
 
-2. Using the installer
-
-Users can just run 'kubectl apply -f <URL for YAML BUNDLE>' to install
-the project, i.e.:
+The controller ships sample resources in `config/samples/`.
+Apply them with:
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/<org>/ovs-cni-controller/<tag or branch>/dist/install.yaml
+kubectl apply -k config/samples/
 ```
 
-### By providing a Helm Chart
+### Sample `NeutronConfig`
 
-1. Build the chart using the optional helm plugin
+`config/samples/openstack_v1_neutronconfig.yaml` includes:
+- `networkUUID`: the OpenStack network UUID to allocate ports on
+- `ips`: a list of IP addresses and/or ranges to assign
+- `openStackAuthConfigName`: the name of a ConfigMap in the same namespace containing `clouds.yaml`
+
+The controller expects the ConfigMap to contain valid OpenStack auth data under the key `clouds.yaml`.
+
+### `NeutronIPAddress`
+
+`NeutronIPAddress` resources are typically created and managed by the controller from `NeutronConfig` objects.
+They contain port metadata such as `ipAddress`, `subnet`, `macAddress`, and `portID`.
+
+The controller also watches label transitions on `NeutronIPAddress` resources:
+- `state=unbound` clears the port `device_id` in OpenStack
+- `state=bound` sets the port `device_id` to the pod identifier stored in the resource annotations
+
+## Testing
+
+Run unit tests and verify generated manifests:
 
 ```sh
-kubebuilder edit --plugins=helm/v2-alpha
+make test
 ```
 
-2. See that a chart was generated under 'dist/chart', and users
-can obtain this solution from there.
+Run end-to-end tests using Kind:
 
-**NOTE:** If you change the project, you need to update the Helm Chart
-using the same command above to sync the latest changes. Furthermore,
-if you create webhooks, you need to use the above command with
-the '--force' flag and manually ensure that any custom configuration
-previously added to 'dist/chart/values.yaml' or 'dist/chart/manager/manager.yaml'
-is manually re-applied afterwards.
+```sh
+make test-e2e
+```
 
-## Contributing
-// TODO(user): Add detailed information on how you would like others to contribute to this project
+## Development notes
 
-**NOTE:** Run `make help` for more information on all potential `make` targets
+If you update API types or markers, regenerate code and manifests:
 
-More information can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
+```sh
+make manifests generate
+```
+
+Inspect available make targets:
+
+```sh
+make help
+```
 
 ## License
 
