@@ -55,6 +55,9 @@ spec:
                 type: string
               openStackAuthConfigName:
                 type: string
+            required:
+            - networkUUID
+            - openStackAuthConfigName
             type: object
           status:
             description: status defines the observed state of NeutronConfig

@@ -32,9 +32,12 @@ type NeutronConfigSpec struct {
 
 	// foo is an example field of NeutronConfig. Edit neutronconfig_types.go to remove/update
 	// +optional
-	NetworkUUID             string   `json:"networkUUID,omitempty"`
-	Ips                     []string `json:"ips,omitempty"`
-	OpenStackAuthConfigName string   `json:"openStackAuthConfigName,omitempty"`
+	// +kubebuilder:validation:Required
+	NetworkUUID string   `json:"networkUUID,omitempty"`
+	Ips         []string `json:"ips,omitempty"`
+
+	// +kubebuilder:validation:Required
+	OpenStackAuthConfigName string `json:"openStackAuthConfigName,omitempty"`
 }
 
 // NeutronConfigStatus defines the observed state of NeutronConfig.

@@ -51,7 +51,10 @@ var _ = Describe("NeutronConfig Controller", func() {
 						Name:      resourceName,
 						Namespace: "default",
 					},
-					// TODO(user): Specify other spec details if needed.
+					Spec: openstackv1.NeutronConfigSpec{
+						NetworkUUID:             "5b96823c-06f3-442b-9e45-3a1051c1a8ff",
+						OpenStackAuthConfigName: "cloud-config",
+					},
 				}
 				Expect(k8sClient.Create(ctx, resource)).To(Succeed())
 			}
